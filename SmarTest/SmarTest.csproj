@@ -68,8 +68,7 @@
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Components\Pages\" />
-    </ItemGroup>
-
+	<ItemGroup>
+		<Folder Include="Components\Pages\" />
+	</ItemGroup>
 </Project>
