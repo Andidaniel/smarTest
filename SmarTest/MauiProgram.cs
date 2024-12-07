@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SmarTest.Services;
+using SmarTest.Services.Interfaces;
 
 namespace SmarTest
 {
@@ -20,6 +22,8 @@ namespace SmarTest
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<IAuthService, AuthService>();
 
             return builder.Build();
         }
