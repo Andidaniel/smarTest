@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ namespace SmarTest.DataLayer.Models
         public int Id { get; set; }
         public int Number { get; set; }
         public string Subclass { get; set; }
-        public string ClassMaster { get; set; }
+        public string ClassTeacher { get; set; }
     }
 }
