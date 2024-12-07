@@ -1,9 +1,22 @@
-﻿@inherits LayoutComponentBase
+﻿@using SmarTest.Services.Interfaces
+@inherits LayoutComponentBase
+
+@inject IAuthService AuthService
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @if (AuthService.LoggedInUser != null)
+    {
+        <div class="sidebar">
+            @if (AuthService.LoggedInUser.IsTeacher)
+            {
+                    <TeacherNavMenu />
+            }
+            else
+            {
+                    <StudentNavMenu />
+            }
+        </div>
+    }
 
     <main>
 
