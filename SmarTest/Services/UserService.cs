@@ -1,6 +1,7 @@
 ﻿using SmarTest.Services.Interfaces;
 using SmarTest.DataLayer.Models;
 using SmarTest.DataLayer;
+using MongoDB.Bson;
 
 namespace SmarTest.Services
 {
@@ -38,6 +39,11 @@ namespace SmarTest.Services
 
                 await UpdateAsync(existingUser);
             }
+        }
+
+        public async Task DeleteUserAsync(ObjectId id)
+        {
+            await DeleteAsync(id);
         }
     }
 }

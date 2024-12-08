@@ -1,5 +1,6 @@
 ﻿@page "/teacher/users"
 @using MongoDB.Bson
+@using SmarTest.Components.Common
 @using SmarTest.DataLayer.Models;
 @using SmarTest.Services.Interfaces
 
@@ -34,7 +35,8 @@ else
                     <td>@user.Username</td>
                     <td>@(user.IsTeacher ? "Teacher" : "Student")</td>
                     <td>
-                        <button class="btn btn-warning" @onclick="() => ShowEditUserForm(user)">Edit</button>
+                        <button class="btn btn-warning me-2" @onclick="() => ShowEditUserForm(user)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => ConfirmDeleteUser(user)">Delete</button>
                     </td>
                 </tr>
             }
@@ -86,9 +88,20 @@ else
     <div class="modal-backdrop fade show"></div>
 }
 
+@if (isDeleting)
+{
+    <DeleteConfirmationDialog Title="Delete User"
+                              Message="Are you sure you want to delete this user?"
+                              ItemDetails="@($"{deleteUser?.FirstName} {deleteUser?.LastName}")"
+                              OnConfirm="DeleteUserAsync"
+                              OnCancel="CancelDelete" />
+}
+
 @code {
     private List<User> users = new();
     private User currentUser = new User();
+    private User? deleteUser = null;
+    private bool isDeleting = false;
     private bool isEditing = false;
     private string modalTitle = string.Empty;
 
@@ -137,5 +150,29 @@ else
     private void CancelEdit()
     {
         isEditing = false;
+    }
+
+    private void ConfirmDeleteUser(User user)
+    {
+        deleteUser = user;
+        isDeleting = true;
+    }
+
+    private async Task DeleteUserAsync()
+    {
+        if (deleteUser != null)
+        {
+            await UserService.DeleteUserAsync(deleteUser._id);
+        }
+
+        isDeleting = false;
+        deleteUser = null;
+        users = await UserService.GetAllUsers();
+    }
+
+    private void CancelDelete()
+    {
+        isDeleting = false;
+        deleteUser = null;
     }
 }

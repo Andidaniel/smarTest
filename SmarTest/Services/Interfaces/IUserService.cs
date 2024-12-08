@@ -1,4 +1,5 @@
-﻿using SmarTest.DataLayer.Models;
+﻿using MongoDB.Bson;
+using SmarTest.DataLayer.Models;
 
 namespace SmarTest.Services.Interfaces
 {
@@ -7,5 +8,6 @@ namespace SmarTest.Services.Interfaces
         Task<List<User>> GetAllUsers();
         Task AddUserAsync(User user);
         Task EditUserAsync(User user);
+        Task DeleteUserAsync(ObjectId id);
     }
 }
