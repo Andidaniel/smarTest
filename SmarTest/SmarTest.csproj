@@ -37,7 +37,6 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-        <UserSecretsId>dd5edcd2-7866-4b4e-9534-69ce9b5dd18d</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -68,6 +67,9 @@
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.0" />
     </ItemGroup>
 
+  <PropertyGroup>
+    <UserSecretsId>dd5edcd2-7866-4b4e-9534-69ce9b5dd18d</UserSecretsId>
+  </PropertyGroup>
 	<ItemGroup>
 		<Folder Include="Components\Pages\" />
 	</ItemGroup>

@@ -1,14 +1,20 @@
-﻿using SmarTest.DataLayer.Models;
+﻿using SmarTest.DataLayer;
+using SmarTest.DataLayer.Models;
 using SmarTest.Services.Interfaces;
 
 namespace SmarTest.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly SmarTestDbContext smarTestDbContext;
+        public AuthService(SmarTestDbContext smarTestDbContext)
+        {
+            this.smarTestDbContext = smarTestDbContext;
+        }
         private readonly List<User> _users = new List<User>
         {
-            new User { Id = 1, FirstName = "student", LastName = "student", IsTeacher = false },
-            new User { Id = 2, FirstName = "teacher", LastName = "teacher", IsTeacher = true },
+            new User {  FirstName = "student", LastName = "student", IsTeacher = false },
+            new User {  FirstName = "teacher", LastName = "teacher", IsTeacher = true , Username="admin"},
         };
 
         public User LoggedInUser { get; set; } = null!;

@@ -9,7 +9,7 @@ namespace SmarTest.DataLayer.Models
 {
     public class StudentClass
     {
-        public int Id { get; set; }
+        public ObjectId _id { get; set; }
         public int Number { get; set; }
         public string Subclass { get; set; }
         public string ClassTeacher { get; set; }
