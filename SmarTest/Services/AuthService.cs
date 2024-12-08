@@ -35,9 +35,6 @@ namespace SmarTest.Services
 
         public async Task LogoutAsync()
         {
-            await _dbContext.Users.AddRangeAsync(_users[0], _users[1]);
-            await _dbContext.SaveChangesAsync();
-
             LoggedInUser = null;
             await Task.CompletedTask;
         }
