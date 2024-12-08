@@ -14,7 +14,9 @@ namespace SmarTest.DataLayer.Models
         public string LastName { get; set; }
         public string Username { get; set; }
         public bool IsTeacher { get; set; }
-        public int? ClassId { get; set; }
+        public ObjectId? StudentClassId { get; set; }
+
+        public virtual StudentClass StudentClass { get; set; }
     }
 }
     

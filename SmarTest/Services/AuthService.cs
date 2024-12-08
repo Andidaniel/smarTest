@@ -4,16 +4,13 @@ using SmarTest.Services.Interfaces;
 
 namespace SmarTest.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : BaseService<User>, IAuthService
     {
-        private readonly SmarTestDbContext smarTestDbContext;
-        public AuthService(SmarTestDbContext smarTestDbContext)
-        {
-            this.smarTestDbContext = smarTestDbContext;
-        }
+        public AuthService(SmarTestDbContext dbContext) : base(dbContext) { }
+
         private readonly List<User> _users = new List<User>
         {
-            new User {  FirstName = "student", LastName = "student", IsTeacher = false },
+            new User {  FirstName = "student", LastName = "student", IsTeacher = false, Username="ss2024" },
             new User {  FirstName = "teacher", LastName = "teacher", IsTeacher = true , Username="admin"},
         };
 
@@ -38,6 +35,9 @@ namespace SmarTest.Services
 
         public async Task LogoutAsync()
         {
+            await _dbContext.Users.AddRangeAsync(_users[0], _users[1]);
+            await _dbContext.SaveChangesAsync();
+
             LoggedInUser = null;
             await Task.CompletedTask;
         }
