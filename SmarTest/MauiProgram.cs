@@ -41,6 +41,7 @@ namespace SmarTest
             builder.Services.AddSingleton<IAuthService, AuthService>();
 
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IStudentClassService, StudentClassService>();
 
             return builder.Build();
         }
