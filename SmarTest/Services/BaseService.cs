@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using SmarTest.DataLayer;
 
 namespace SmarTest.Services
@@ -17,7 +18,7 @@ namespace SmarTest.Services
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(ObjectId id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
@@ -34,7 +35,7 @@ namespace SmarTest.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(ObjectId id)
         {
             var entity = await GetByIdAsync(id);
             if (entity != null)
