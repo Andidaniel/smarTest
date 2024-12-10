@@ -86,8 +86,8 @@ else
                             </div>
                             <div>
                                 <label>Class:</label>
-                                <select class="form-control" id="classDropdown" @bind="SelectedClassId">
-                                    <option value="">Select a class</option>
+                                <select class="form-select" id="classDropdown" @bind="SelectedClassId">
+                                    <option selected value="">Select a class</option>
                                     @foreach (var studentClass in studentClasses)
                                     {
                                         <option value="@studentClass._id.ToString()">
@@ -137,6 +137,7 @@ else
 
     private void ShowAddUserForm()
     {
+        SelectedClassId = string.Empty;
         currentUser = new User();
         modalTitle = "Add User";
         isEditing = true;
