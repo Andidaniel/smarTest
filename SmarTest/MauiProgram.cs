@@ -5,6 +5,7 @@ using SmarTest.DataLayer;
 using SmarTest.DataLayer.Models;
 using SmarTest.Services;
 using SmarTest.Services.Interfaces;
+using SmarTest.WinUI;
 
 namespace SmarTest
 {
@@ -32,11 +33,12 @@ namespace SmarTest
             });
             builder.Services.AddMauiBlazorWebView();
             
-
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddSingleton<IAuthService, AuthService>();
 

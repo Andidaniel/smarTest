@@ -1,10 +1,14 @@
 ﻿@page "/teacher/users"
+@using AutoMapper
 @using MongoDB.Bson
 @using SmarTest.Components.Common
 @using SmarTest.DataLayer.Models;
 @using SmarTest.Services.Interfaces
 
 @inject IUserService UserService
+@inject IStudentClassService StudentClassService
+@inject IMapper Mapper
+
 
 <h3>Users</h3>
 
@@ -23,6 +27,7 @@ else
                 <th>Last Name</th>
                 <th>Username</th>
                 <th>Role</th>
+                <th>Class</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -34,6 +39,7 @@ else
                     <td>@user.LastName</td>
                     <td>@user.Username</td>
                     <td>@(user.IsTeacher ? "Teacher" : "Student")</td>
+                    <td>@(user.StudentClass != null ? $"{user.StudentClass.Number} - {user.StudentClass.Subclass}" : "Not set")</td>
                     <td>
                         <button class="btn btn-warning me-2" @onclick="() => ShowEditUserForm(user)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => ConfirmDeleteUser(user)">Delete</button>
@@ -54,36 +60,52 @@ else
                     <h5 class="modal-title">@modalTitle</h5>
                     <button type="button" class="btn-close" aria-label="Close" @onclick="CancelEdit"></button>
                 </div>
-                <div class="modal-body">
+               
                     <EditForm Model="@currentUser" OnValidSubmit="SaveUserAsync">
                         <DataAnnotationsValidator />
                         <ValidationSummary />
-
-                        <div>
-                            <label>First Name:</label>
-                            <InputText @bind-Value="currentUser.FirstName" class="form-control" />
+                         <div class="modal-body">
+                            <div>
+                                <label>First Name:</label>
+                                <InputText @bind-Value="currentUser.FirstName" class="form-control" />
+                                <ValidationMessage For="@(() => currentUser.FirstName)" />
+                            </div>
+                            <div>
+                                <label>Last Name:</label>
+                                <InputText @bind-Value="currentUser.LastName" class="form-control" />
+                                <ValidationMessage For="@(() => currentUser.LastName)" />
+                            </div>
+                            <div>
+                                <label>Username:</label>
+                                <InputText @bind-Value="currentUser.Username" class="form-control" />
+                                <ValidationMessage For="@(() => currentUser.Username)" />
+                            </div>
+                            <div>
+                                <label>Role:</label>
+                                <InputCheckbox @bind-Value="currentUser.IsTeacher" /> Is Teacher
+                            </div>
+                            <div>
+                                <label>Class:</label>
+                                <select class="form-control" id="classDropdown" @bind="SelectedClassId">
+                                    <option value="">Select a class</option>
+                                    @foreach (var studentClass in studentClasses)
+                                    {
+                                        <option value="@studentClass._id.ToString()">
+                                            @($"{studentClass.Number} - {studentClass.Subclass}")
+                                        </option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                        <div>
-                            <label>Last Name:</label>
-                            <InputText @bind-Value="currentUser.LastName" class="form-control" />
-                        </div>
-                        <div>
-                            <label>Username:</label>
-                            <InputText @bind-Value="currentUser.Username" class="form-control" />
-                        </div>
-                        <div>
-                            <label>Role:</label>
-                            <InputCheckbox @bind-Value="currentUser.IsTeacher" /> Is Teacher
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
                         </div>
                     </EditForm>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" @onclick="SaveUserAsync">Save</button>
-                    <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
-                </div>
             </div>
         </div>
-    </div>
+
 
     <div class="modal-backdrop fade show"></div>
 }
@@ -99,6 +121,8 @@ else
 
 @code {
     private List<User> users = new();
+    private List<StudentClass> studentClasses = new();
+    private string SelectedClassId { get; set; } = string.Empty;
     private User currentUser = new User();
     private User? deleteUser = null;
     private bool isDeleting = false;
@@ -108,6 +132,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         users = await UserService.GetAllUsers();
+        studentClasses = await StudentClassService.GetAllStudentClassesAsync();
     }
 
     private void ShowAddUserForm()
@@ -126,14 +151,26 @@ else
                 LastName = user.LastName,
                 Username = user.Username,
                 IsTeacher = user.IsTeacher,
-                StudentClass = user.StudentClass
+                StudentClass = user.StudentClass,
+                StudentClassId = user.StudentClassId
             };
+        SelectedClassId = currentUser.StudentClassId.ToString() ?? string.Empty;
         modalTitle = "Edit User";
         isEditing = true;
     }
 
     private async Task SaveUserAsync()
     {
+        if (!string.IsNullOrEmpty(SelectedClassId))
+        {
+            var selectedClass = studentClasses.FirstOrDefault(c => c._id.ToString() == SelectedClassId);
+            if (selectedClass != null)
+            {
+                currentUser.StudentClassId = selectedClass._id; 
+                currentUser.StudentClass = Mapper.Map<StudentClassWithoutId>(selectedClass);  
+            }
+        }
+
         if (currentUser._id == ObjectId.Empty)
         {
             await UserService.AddUserAsync(currentUser);

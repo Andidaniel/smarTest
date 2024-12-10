@@ -36,6 +36,7 @@ namespace SmarTest.Services
                 existingUser.Username = user.Username;
                 existingUser.IsTeacher = user.IsTeacher;
                 existingUser.StudentClass = user.StudentClass;
+                existingUser.StudentClassId = user.StudentClassId;
 
                 await UpdateAsync(existingUser);
             }
