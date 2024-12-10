@@ -58,6 +58,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
@@ -70,7 +71,4 @@
   <PropertyGroup>
     <UserSecretsId>dd5edcd2-7866-4b4e-9534-69ce9b5dd18d</UserSecretsId>
   </PropertyGroup>
-	<ItemGroup>
-		<Folder Include="Components\Pages\" />
-	</ItemGroup>
 </Project>

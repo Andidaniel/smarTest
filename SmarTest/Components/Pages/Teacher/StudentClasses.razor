@@ -1,0 +1,173 @@
+﻿@page "/teacher/classes"
+@using MongoDB.Bson
+@using SmarTest.Components.Common
+@using SmarTest.DataLayer.Models
+@using SmarTest.Services.Interfaces
+@inject IStudentClassService StudentClassService
+
+<h3>Classes</h3>
+
+@if (classes == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="ShowAddClassForm">Add Class</button>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Subclass</th>
+                <th>Class Teacher</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var studentClass in classes)
+            {
+                <tr>
+                    <td>@studentClass.Number</td>
+                    <td>@studentClass.Subclass</td>
+                    <td>@studentClass.ClassTeacher</td>
+                    <td>
+                        <button class="btn btn-warning me-2" @onclick="() => ShowEditClassForm(studentClass)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => ShowDeleteConfirmation(studentClass)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- Modal Dialog for Add/Edit -->
+@if (isEditing)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@modalTitle</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="CancelEdit"></button>
+                </div>
+     
+                    <EditForm Model="@currentClass" OnValidSubmit="SaveClassAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="Number">Number:</label>
+                                <InputNumber id="Number" @bind-Value="currentClass.Number" class="form-control" />
+                                <ValidationMessage For="@(() => currentClass.Number)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Subclass">Subclass:</label>
+                                <InputText id="Subclass" @bind-Value="currentClass.Subclass" class="form-control" />
+                                <ValidationMessage For="@(() => currentClass.Subclass)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="ClassTeacher">Class Teacher:</label>
+                                <InputText id="ClassTeacher" @bind-Value="currentClass.ClassTeacher" class="form-control" />
+                                <ValidationMessage For="@(() => currentClass.ClassTeacher)" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" >Save</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                        </div>
+                    </EditForm>
+                </div>
+             
+            </div>
+        </div>
+
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+<!-- Modal Dialog for Delete Confirmation -->
+@if (isDeleting)
+{
+    <DeleteConfirmationDialog 
+        Title="Delete Class"
+        Message="Are you sure you want to delete this class?"
+        ItemDetails="@($"{deleteClass?.Number} {deleteClass?.Subclass}")"
+        OnConfirm="DeleteClassAsync"
+        OnCancel="CancelDelete" />
+}
+
+@code {
+    private List<StudentClass> classes = new List<StudentClass>();
+    private StudentClass currentClass = new StudentClass();
+    private bool isEditing = false;
+    private bool isDeleting = false;
+    private StudentClass deleteClass;
+    private string modalTitle = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        classes = await StudentClassService.GetAllStudentClassesAsync();
+    }
+
+    private void ShowAddClassForm()
+    {
+        currentClass = new StudentClass(); 
+        modalTitle = "Add Class";
+        isEditing = true;
+    }
+
+    private void ShowEditClassForm(StudentClass studentClass)
+    {
+        currentClass = new StudentClass
+            {
+                _id = studentClass._id,
+                Number = studentClass.Number,
+                Subclass = studentClass.Subclass,
+                ClassTeacher = studentClass.ClassTeacher
+            };
+        modalTitle = "Edit Class";
+        isEditing = true;
+    }
+
+    private async Task SaveClassAsync()
+    {
+        if (currentClass._id == ObjectId.Empty)
+        {
+            await StudentClassService.AddStudentClassAsync(currentClass);
+        }
+        else
+        {
+            await StudentClassService.EditStudentClassAsync(currentClass);
+        }
+
+        classes = await StudentClassService.GetAllStudentClassesAsync();
+        isEditing = false;
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+    }
+
+    private void ShowDeleteConfirmation(StudentClass studentClass)
+    {
+        deleteClass = studentClass; 
+        isDeleting = true;
+    }
+
+    private async Task DeleteClassAsync()
+    {
+        if (deleteClass != null)
+        {
+            await StudentClassService.DeleteStudentClassAsync(deleteClass._id);
+            classes = await StudentClassService.GetAllStudentClassesAsync(); 
+            isDeleting = false;
+        }
+    }
+
+    private void CancelDelete()
+    {
+        isDeleting = false;
+    }
+}

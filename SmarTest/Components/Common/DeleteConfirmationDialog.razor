@@ -1,0 +1,31 @@
+﻿<div class="modal show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="OnCancel"></button>
+            </div>
+            <div class="modal-body">
+                <p>@Message</p>
+                @if (!string.IsNullOrEmpty(ItemDetails))
+                {
+                    <p><strong>@ItemDetails</strong></p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" @onclick="OnConfirm">Delete</button>
+                <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Confirmation";
+    [Parameter] public string Message { get; set; } = "Are you sure you want to proceed?";
+    [Parameter] public string? ItemDetails { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+}

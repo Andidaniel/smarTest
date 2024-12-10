@@ -50,11 +50,11 @@
 
         if (AuthService.LoggedInUser.IsTeacher)
         {
-            NavigationManager.NavigateTo("/teacher");
+            NavigationManager.NavigateTo("/teacher/home");
         }
         else
         {
-            NavigationManager.NavigateTo("/student");
+            NavigationManager.NavigateTo("/student/home");
         }
     }
 
